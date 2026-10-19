@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X-Name Generator</title>
+  <meta name="description" content="Generate stylish names with X prefix and signature symbols for your gaming and social profiles.">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: #f8fafc;
+      background: #0f172a;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 480px;
+      padding: 28px;
+      border: 1px solid #334155;
+      border-radius: 20px;
+      background: #1e293b;
+    }
+
+    h1 { margin-top: 0; }
+    p { color: #cbd5e1; line-height: 1.5; }
+
+    input, textarea, button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: 10px;
+      font: inherit;
+    }
+
+    input, textarea {
+      color: white;
+      background: #0f172a;
+      border: 1px solid #475569;
+    }
+
+    textarea { resize: vertical; }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      font-weight: bold;
+      background: #60a5fa;
+      color: #0f172a;
+    }
+
+    .result {
+      margin-top: 20px;
+      overflow-wrap: anywhere;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #0f172a;
+    }
+
+    .item span { overflow-wrap: anywhere; }
+    .item button { width: auto; margin: 0; padding: 9px; }
+    .hint { font-size: 13px; }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <h1>⚡ X-Name Generator</h1>
+    <p>Apna naam likho aur stylish signature banao!</p>
+
+    <input id="names" placeholder="Example: Akash, Rahul, Prince">
+    <button id="generate">Generate Stylish Names</button>
+
+    <p class="hint">Har naam ko comma se separate karo.</p>
+    <section id="results" class="result" aria-live="polite"></section>
+  </main>
+
+  <script>
+    const map = {
+      a:"ᴀ", b:"ʙ", c:"ᴄ", d:"ᴅ", e:"ᴇ",
+      f:"ꜰ", g:"ɢ", h:"ʜ", i:"ɪ", j:"ᴊ",
+      k:"ᴋ", l:"ʟ", m:"ᴍ", n:"ɴ", o:"ᴏ",
+      p:"ᴘ", q:"ǫ", r:"ʀ", s:"s", t:"ᴛ",
+      u:"ᴜ", v:"ᴠ", w:"ᴡ", x:"x", y:"ʏ", z:"ᴢ"
+    };
+
+    function generateName(name) {
+      name = name.trim();
+      if (!name) return "";
+
+      const first = name[0].toUpperCase();
+      const rest = [...name.slice(1)]
+        .map(char => map[char.toLowerCase()] || char)
+        .join("");
+
+      return `X-${first}${rest}࿐`;
+    }
+
+    document.getElementById("generate").addEventListener("click", () => {
+      const input = document.getElementById("names").value;
+      const results = document.getElementById("results");
+      results.replaceChildren();
+
+      const names = input.split(",").map(n => n.trim()).filter(Boolean);
+
+      if (!names.length) {
+        results.textContent = "Bhai, pehle apna naam likho!";
+        return;
+      }
+
+      names.forEach(name => {
+        const item = document.createElement("div");
+        item.className = "item";
+
+        const output = document.createElement("span");
+        output.textContent = generateName(name);
+
+        const copy = document.createElement("button");
+        copy.textContent = "Copy";
+        copy.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(output.textContent);
+            copy.textContent = "Copied!";
+            setTimeout(() => copy.textContent = "Copy", 1200);
+          } catch {
+            alert("Naam select karke manually copy kar lo.");
+          }
+        });
+
+        item.append(output, copy);
+        results.appendChild(item);
+      });
+    });
+
+    document.getElementById("names").addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        document.getElementById("generate").click();
+      }
+    });
+  </script>
+</body>
+</html>
